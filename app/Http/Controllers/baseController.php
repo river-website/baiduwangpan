@@ -10,7 +10,7 @@ use App\suffix;
 use App\website;
 use Illuminate\Support\Facades\Redis;
 
-class BaseController extends Controller{
+class baseController extends Controller{
     protected $webSiteInfo = null;
     protected $suffixToType = null;
     protected $typeToSuffix = null;
@@ -18,8 +18,8 @@ class BaseController extends Controller{
     protected $hotFileList = null;
     protected $hotUserList = null;
     public function __construct(){
-        $this->baseInfo();
-        $this->hot();
+//        $this->baseInfo();
+//        $this->hot();
     }
     private function baseInfo(){
         // 网站基本信息

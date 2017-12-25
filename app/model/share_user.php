@@ -17,5 +17,4 @@ class share_user extends Model
      * @var string
      */
     protected $table = 'share_user';
-
 }

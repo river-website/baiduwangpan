@@ -17,4 +17,11 @@ class share_file extends Model
      * @var string
      */
     protected $table = 'share_file';
+
+    public function getNew($limit){
+        return $this->orderByDesc('id')->limit($limit)->get();
+    }
+    public function getUkFile($uk,$limit,$page){
+        return $this->where('uk',$uk)->paginate($limit);
+    }
 }
