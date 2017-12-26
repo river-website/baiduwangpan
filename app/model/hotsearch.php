@@ -5,7 +5,7 @@
  * Date: 2017/12/20
  * Time: 14:17
  */
-namespace App;
+namespace App\model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,7 +16,7 @@ class hotsearch extends Model
      *
      * @var string
      */
-    protected $table = 'hotsearch';
+    protected $table = 'hotSearch';
 
     public function getDateHot($date,$limit){
         return $this->where('date','=',$date)->groupBy('searchWord')->orderByDesc('count(searchWord)')->limit($limit)->get('searchWord');

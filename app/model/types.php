@@ -5,7 +5,7 @@
  * Date: 2017/12/20
  * Time: 15:40
  */
-namespace App;
+namespace App\model;
 
 use Illuminate\Database\Eloquent\Model;
 

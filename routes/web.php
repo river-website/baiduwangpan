@@ -10,21 +10,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/api',function(){
-    echo "1111";
-});
-
-Route::get('/api/baseInfo',function(){
-    echo "1111";
-});
-Route::get('/api/hotInfo',function(){
-    echo "1111";
-});
 Route::get('/api/user','share_userController@get');
-Route::get('/api/file',function(){
-    echo "1111";
-});
-Route::get('/api/search',function(){
-    echo "1111";
-});
+Route::get('/api/file/search','share_fileController@search');
+Route::get('/api/file','share_fileController@get');

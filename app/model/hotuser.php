@@ -5,7 +5,7 @@
  * Date: 2017/12/20
  * Time: 14:17
  */
-namespace App;
+namespace App\model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,7 +16,7 @@ class hotuser extends Model
      *
      * @var string
      */
-    protected $table = 'hotuser';
+    protected $table = 'hotUser';
     public function getDateHot($date,$limit){
         return $this->join('share_user','share_file.id=hotFile.fileID')->where('date','=',$date)->groupBy('userID')->orderByDesc('count(userID)')->limit($limit)->get(['share_user.id','userName','imgUrl']);
     }

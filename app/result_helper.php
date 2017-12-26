@@ -65,3 +65,28 @@ if (!function_exists('filter')) {
         }
     }
 }
+if (!function_exists('redis')) {
+    function redis(){
+        static $redis;
+        if(empty($redis)){
+            //连接本地的 Redis 服务
+            $redis = new Redis();
+            $config = config('database.redis.default');
+            $redis->connect($config['host'], $config['port']);
+        }
+        return $redis;
+    }
+}
+if (!function_exists('getRedis')) {
+    function getRedis($key){
+//        $redis = redis();
+//        return unserialize($redis->get($key));
+    }
+}
+if (!function_exists('setRedis')) {
+    function setRedis($key,$value,$timeOut=600){
+        $redis = redis();
+        return $redis->set($key,serialize($value),$timeOut);
+    }
+}
+

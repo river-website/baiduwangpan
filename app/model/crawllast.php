@@ -5,7 +5,7 @@
  * Date: 2017/12/20
  * Time: 15:41
  */
-namespace App;
+namespace App\model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,6 +16,6 @@ class crawllast extends Model
      *
      * @var string
      */
-    protected $table = 'crawllast';
+    protected $table = 'crawlLast';
 
 }

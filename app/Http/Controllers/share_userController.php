@@ -1,10 +1,10 @@
 <?php namespace App\Http\Controllers;
 
-use App\hotuser;
-use App\share_file;
-use App\share_user;
+use App\model\hotuser;
+use App\model\share_file;
+use App\model\share_user;
 
-class share_userController extends BaseController {
+class share_userController extends baseController {
 
     /**
      * Show the profile for the given user.
@@ -19,23 +19,14 @@ class share_userController extends BaseController {
         // 参数过滤
         $ret = filter($params,array('id'));
         if($ret['ret'] != 0)output_json($ret);
-        // 初始话参数
+        // 初始化参数
         $userID = $params['id'];
         // 业务逻辑
-        $userInfo = $this->getRedisCache("share_user:$userID",function ()use($userID){
-            $share_user = new share_user();
-            $ret = $share_user->find($userID);
-            if(!empty($ret['uk'])){
-                $share_file = new share_file();
-                $ret['fileCount'] = $share_file->where('uk',$ret['uk'])->count();
-            }
-            return $ret;
-        });
-
-        $data['userID'] = $userID;
-        $data['date'] = date('Ymd',time());
-        $hotUser = new hotuser();
-        $hotUser->insert($data);
+        $userInfo = $this->getUserByID($userID);
+//        $data['userID'] = $userID;
+//        $data['date'] = date('Ymd',time());
+//        $hotUser = new hotuser();
+//        $hotUser->insert($data);
 
         output_json(success($userInfo));
     }
@@ -46,7 +37,7 @@ class share_userController extends BaseController {
         // 参数过滤
         $ret = filter($params,array('id','page'));
         if($ret['ret'] != 0)output_json($ret);
-        // 初始话参数
+        // 初始化参数
         $limit = 20;
         $userID = $params['id'];
         $page = $params['page'];

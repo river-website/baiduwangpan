@@ -5,7 +5,7 @@
  * Date: 2017/12/20
  * Time: 14:04
  */
-namespace App;
+namespace App\model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,5 +16,5 @@ class website extends Model
      *
      * @var string
      */
-    protected $table = 'website';
+    protected $table = 'webSite';
 }
