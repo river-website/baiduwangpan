@@ -28,31 +28,23 @@ class share_fileController extends baseController{
         $fileInfo['typeName'] = isset($suffixList[$fileInfo['suffix']])?$suffixList[$fileInfo['suffix']]:'未知';
 
 
-        $preFile = $share_file
-            ->where('id','<',$fileID)
-            ->orderByDesc('id')
-            ->limit(1)
-            ->get('id,fileName');
+        $preFile = $share_file->getPreByID($fileID,['id','fileName']);
         if(empty($preFile)||count($preFile) == 0)$preFile = array('id'=>null,'fileName'=>null,'fileUrl'=>null);
         else{
             $preFile['fileUrl'] = $this->toFileUrl($preFile);
         }
         $fileInfo['pre'] = $preFile;
-        $nextFile = $share_file
-            ->where('id','>',$fileID)
-            ->order('id')
-            ->limit(1)
-            ->get('id,fileName');
+        $nextFile = $share_file->getNextByID($fileID,['id','fileName']);
         if(empty($nextFile)||count($nextFile) == 0)$nextFile = array('id'=>null,'fileName'=>null,'fileUrl'=>null);
         else{
             $nextFile['fileUrl'] = $this->toFileUrl($nextFile);
         }
         $fileInfo['next'] = $nextFile;
 
-//        $data['date'] = date('Ymd',time());
-//        $data['fileID'] = $fileID;
-//        $hotFile = new hotfile();
-//        $hotFile->insert($data);
+        $data['date'] = date('Ymd',time());
+        $data['fileID'] = $fileID;
+        $hotFile = new hotfile();
+        $hotFile->insert($data);
         output_json(success($fileInfo));
     }
     public function search(){

@@ -33,8 +33,27 @@ class share_file extends Model
             $this->where('uk',$params['uk']);
         if(!empty($params['fileName']))
             $this->where('filename','like',"%".$params['fileName']."%");
-        $ret['data'] = $this->get();
+        $ret['data'] = $this->limit($limit)->toSql();
+        output_json(success($ret));
         $ret['totle'] = $this->count();
         return $ret;
+    }
+    public function getPreByID($id,$filter='*'){
+        $ret = $this
+            ->where('id','<',$id)
+            ->orderByDesc('id')
+            ->limit(1)
+            ->select($filter)
+            ->first();
+        if(!empty($ret))return $ret->toArray();
+    }
+    public function getNextByID($id,$filter='*'){
+        $ret = $this
+            ->where('id','>',$id)
+            ->orderBy('id')
+            ->limit(1)
+            ->select($filter)
+            ->first();
+        if(!empty($ret))return $ret->toArray();
     }
 }

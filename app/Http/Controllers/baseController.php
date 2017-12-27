@@ -25,14 +25,14 @@ class baseController extends Controller{
             $this->webSiteInfo = $this->getRedisCache('webSiteInfo', function () {
                 $webSite = new website();
                 $webSiteInfo = $webSite->find(1)->toArray();
-                $share_file = new share_file();
-                $webSiteInfo['fileCount'] = $share_file->count();
+//                $share_file = new share_file();
+//                $webSiteInfo['fileCount'] = $share_file->count();
                 $webSiteInfo['fileNewCount'] = rand(10000, 1000000);
                 $share_user = new share_user();
                 $webSiteInfo['userCount'] = $share_user->count();
                 $webSiteInfo['userNewCount'] = rand(100, 10000);
                 return $webSiteInfo;
-            });
+            },1800);
         }
         return $this->webSiteInfo;
     }
