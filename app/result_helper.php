@@ -79,8 +79,8 @@ if (!function_exists('redis')) {
 }
 if (!function_exists('getRedis')) {
     function getRedis($key){
-//        $redis = redis();
-//        return unserialize($redis->get($key));
+        $redis = redis();
+        return unserialize($redis->get($key));
     }
 }
 if (!function_exists('setRedis')) {
