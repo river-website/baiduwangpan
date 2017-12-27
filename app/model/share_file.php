@@ -25,17 +25,21 @@ class share_file extends Model
         return $this->where('uk',$uk)->paginate($limit);
     }
     public function search($params){
-        $limit = 20;
-        $offset = ($params['page']-1)*$limit;
+        if(empty($params['page'])) $params['page'] = 1;
+        if(empty($params['limit'])) $params['limit'] = 20;
+        if(empty($params['orderField'])) $params['order'] = 'id';
+        if(empty($params['orderBy'])) $params['orderBy'] = 'orderBy';
+
+        $offset = ($params['page']-1)*$params['limit'];
+        $select = $this;
         if(!empty($params['suffix']) && count($params['suffix'])>1)
-            $this->whereIn('suffix',$params['suffix']);
+            $select = $select->whereIn('suffix',$params['suffix']);
         if(!empty($params['uk']))
-            $this->where('uk',$params['uk']);
+            $select = $select->where('uk',$params['uk']);
         if(!empty($params['fileName']))
-            $this->where('filename','like',"%".$params['fileName']."%");
-        $ret['data'] = $this->limit($limit)->toSql();
-        output_json(success($ret));
-        $ret['totle'] = $this->count();
+            $select = $select->where('filename','like',"%".$params['fileName']."%");
+        $ret['data'] = $select->$params['orderBy']($params['orderField'])->offset($offset)->limit($params['limit'])->get()->toArray();
+        $ret['totle'] = $select->count();
         return $ret;
     }
     public function getPreByID($id,$filter='*'){

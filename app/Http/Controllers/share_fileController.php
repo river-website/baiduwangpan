@@ -51,22 +51,23 @@ class share_fileController extends baseController{
         // 参数获取
         $params = $_GET;
         // 参数过滤
-        $ret = filter($params,[],['typeName','suffix','fileName','page','uk']);
+        $ret = filter($params,[],['typeName','suffix','fileName','page','uk','limit','orderBy','page','orderField']);
         if($ret['ret'] != 0)output_json($ret);
         // 初始化参数
-        if(empty($params['page'])) $params['page'] = 1;
+
+
         // 业务逻辑
         if(!empty($params['typeName'])){
             $typeList = $this->getTypeToSuffix();
-            if(empty($typeList[$params['typeName']]))output_json(error());
+            if(empty($typeList[$params['typeName']]))output_json(success());
             if(!empty($params['suffix'])){
-                if(!in_array($params['suffix'],$typeList[$params['typeName']]))output_json(error());
+                if(!in_array($params['suffix'],$typeList[$params['typeName']]))output_json(success());
                 $params['suffix'] = [$params['suffix']];
             }else
                 $params['suffix'] = $typeList[$params['typeName']];
         }
         $share_file = new share_file();
-        $files = $share_file->search($params)->toArray();
+        $files = $share_file->search($params);
         $suffixList = $this->getSuffixToType();
         foreach ($files['data'] as &$vaule) {
             $vaule['typeName'] = empty($suffixList[$vaule['suffix']]) ? '未知' : $suffixList[$vaule['suffix']];
@@ -74,5 +75,4 @@ class share_fileController extends baseController{
         }
         output_json(success($files));
     }
-
 }
