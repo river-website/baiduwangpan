@@ -18,28 +18,22 @@ class share_file extends Model
      */
     protected $table = 'share_file';
 
-    public function getNew($limit){
-        return $this->orderByDesc('id')->limit($limit)->get();
-    }
-    public function getUkFile($uk,$limit,$page){
-        return $this->where('uk',$uk)->paginate($limit);
-    }
     public function search($params){
         if(empty($params['page'])) $params['page'] = 1;
         if(empty($params['limit'])) $params['limit'] = 20;
-        if(empty($params['orderField'])) $params['order'] = 'id';
-        if(empty($params['orderBy'])) $params['orderBy'] = 'orderBy';
-
+        if(empty($params['orderField'])) $params['orderField'] = 'id';
+        if(empty($params['orderBy'])) $params['orderBy'] = 'orderByDesc';
         $offset = ($params['page']-1)*$params['limit'];
         $select = $this;
-        if(!empty($params['suffix']) && count($params['suffix'])>1)
+        if(!empty($params['suffix']) && count($params['suffix'])>0)
             $select = $select->whereIn('suffix',$params['suffix']);
         if(!empty($params['uk']))
             $select = $select->where('uk',$params['uk']);
         if(!empty($params['fileName']))
             $select = $select->where('filename','like',"%".$params['fileName']."%");
+        $bak = clone $select;
         $ret['data'] = $select->$params['orderBy']($params['orderField'])->offset($offset)->limit($params['limit'])->get()->toArray();
-        $ret['totle'] = $select->count();
+        $ret['totle'] = $bak->count();
         return $ret;
     }
     public function getPreByID($id,$filter='*'){

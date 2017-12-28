@@ -42,7 +42,7 @@ class baseController extends Controller{
             // 后缀信息,类型信息
             $this->suffixToType = $this->getRedisCache('suffixToType',function (){
                 $suffix = new suffix();
-                $suffixData = $suffix->getSuffixTpesDict()->toArray();
+                $suffixData = $suffix->getSuffixTpesDict();
                 return array_reduce($suffixData,function($ret,$value){
                     $ret[$value['suffix']] = $value['typeName'];
                     return $ret;
@@ -56,9 +56,9 @@ class baseController extends Controller{
             // 后缀信息,类型信息
             $this->typeToSuffix = $this->getRedisCache('typeToSuffix',function (){
                 $suffix = new suffix();
-                $suffixData = $suffix->getSuffixTpesDict()->toArray();
+                $suffixData = $suffix->getSuffixTpesDict();
                 return array_reduce($suffixData,function($ret,$value){
-                    $ret[$value['suffix']] = $value['typeName'];
+                    $ret[$value['typeName']][] = $value['suffix'];
                     return $ret;
                 });
             });
@@ -70,7 +70,7 @@ class baseController extends Controller{
             // 热门文件
             $this->hotFileList = $this->getRedisCache('hotFileList', function () {
                 $hotFile = new hotfile();
-                $hotFileList = $hotFile->getDateHot(date('Ymd', time()), 20)->toArray();
+                $hotFileList = $hotFile->getDateHot(date('Ymd', time()), 20);
                 return array_map(function ($file) {
                     $file['fileUrl'] = $this->toFileUrl($file);
                     return $file;
@@ -84,7 +84,7 @@ class baseController extends Controller{
             // 热门用户
             $this->hotUserList = $this->getRedisCache('hotUserList',function (){
                 $hotUser = new hotuser();
-                $hotUserList = $hotUser->getDateHot( date('Ymd',time()),20)->toArray();
+                $hotUserList = $hotUser->getDateHot( date('Ymd',time()),20);
                 return array_map(function($user){
                     $user['userUrl'] = $this->toUserUrl($user);
                     return $user;
@@ -98,7 +98,7 @@ class baseController extends Controller{
             // 热门搜索
             $this->hotSearchList = $this->getRedisCache('hotSearchList',function (){
                 $hotSearch = new hotsearch();
-                $hotSearchList = $hotSearch->getDateHot( date('Ymd',time()),20)->toArray();
+                $hotSearchList = $hotSearch->getDateHot( date('Ymd',time()),20);
                 return array_map(function($search){
                     $search['searchUrl'] = $this->toSearchUrl($search);
                     return $search;

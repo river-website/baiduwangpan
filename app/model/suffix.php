@@ -19,6 +19,8 @@ class suffix extends Model
     protected $table = 'suffix';
 
     public function getSuffixTpesDict(){
-        return $this->join('types','types.id','=','suffix.typeID')->get(['types.name as typeName','suffix']);
+        return $this
+            ->join('types','types.id','=','suffix.typeID')
+            ->get(['types.name as typeName','suffix'])->toArray();
     }
 }

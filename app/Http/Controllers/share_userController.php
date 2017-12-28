@@ -23,10 +23,10 @@ class share_userController extends baseController {
         $userID = $params['id'];
         // 业务逻辑
         $userInfo = $this->getUserByID($userID);
-//        $data['userID'] = $userID;
-//        $data['date'] = date('Ymd',time());
-//        $hotUser = new hotuser();
-//        $hotUser->insert($data);
+        $data['userID'] = $userID;
+        $data['date'] = date('Ymd',time());
+        $hotUser = new hotuser();
+        $hotUser->insert($data);
 
         output_json(success($userInfo));
     }

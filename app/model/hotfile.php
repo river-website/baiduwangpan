@@ -8,6 +8,7 @@
 namespace App\model;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class hotfile extends Model
 {
@@ -18,6 +19,13 @@ class hotfile extends Model
      */
     protected $table = 'hotFile';
     public function getDateHot($date,$limit){
-        return $this->join('share_file','share_file.id=hotFile.fileID')->where('date','=',$date)->groupBy('fileID')->orderByDesc('count(fileID)')->limit($limit)->get(['share_file.id','fileName']);
+        return $this
+            ->join('share_file','share_file.id','=','hotFile.fileID')
+            ->where('date',$date)
+            ->groupBy('fileID')
+            ->orderByDesc('clicks')
+            ->limit($limit)
+            ->select(DB::raw('count(fileID) as clicks,share_file.id,share_file.fileName'))
+            ->get()->toArray();
     }
 }

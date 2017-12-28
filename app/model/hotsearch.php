@@ -8,6 +8,7 @@
 namespace App\model;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class hotsearch extends Model
 {
@@ -19,6 +20,12 @@ class hotsearch extends Model
     protected $table = 'hotSearch';
 
     public function getDateHot($date,$limit){
-        return $this->where('date','=',$date)->groupBy('searchWord')->orderByDesc('count(searchWord)')->limit($limit)->get('searchWord');
+        return $this
+            ->where('date',$date)
+            ->groupBy('searchWord')
+            ->orderByDesc('clicks')
+            ->limit($limit)
+            ->select(DB::raw('searchWord,count(searchWord) as clicks'))
+            ->get()->toArray();
     }
 }

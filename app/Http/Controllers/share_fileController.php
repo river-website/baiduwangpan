@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers;
 use App\model\hotfile;
+use App\model\hotsearch;
 use App\model\share_file;
 
 /**
@@ -55,16 +56,12 @@ class share_fileController extends baseController{
         if($ret['ret'] != 0)output_json($ret);
         // 初始化参数
 
-
         // 业务逻辑
-        if(!empty($params['typeName'])){
+        if(!empty($params['suffix'])) $params['suffix'] = [$params['suffix']];
+        elseif (!empty($params['typeName'])){
             $typeList = $this->getTypeToSuffix();
             if(empty($typeList[$params['typeName']]))output_json(success());
-            if(!empty($params['suffix'])){
-                if(!in_array($params['suffix'],$typeList[$params['typeName']]))output_json(success());
-                $params['suffix'] = [$params['suffix']];
-            }else
-                $params['suffix'] = $typeList[$params['typeName']];
+            $params['suffix'] = $typeList[$params['typeName']];
         }
         $share_file = new share_file();
         $files = $share_file->search($params);
@@ -72,6 +69,12 @@ class share_fileController extends baseController{
         foreach ($files['data'] as &$vaule) {
             $vaule['typeName'] = empty($suffixList[$vaule['suffix']]) ? '未知' : $suffixList[$vaule['suffix']];
             $vaule['fileUrl'] = $this->toFileUrl($vaule);
+        }
+        if(count($files)>0 && !empty($params['fileName'])){
+            $data['date'] = date('Ymd',time());
+            $data['searchWord'] = $params['fileName'];
+            $hotSearch = new hotsearch();
+            $hotSearch->insert($data);
         }
         output_json(success($files));
     }
