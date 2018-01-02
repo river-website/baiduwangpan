@@ -5,6 +5,7 @@
  * Date: 2018/1/2
  * Time: 18:20
  */
+use QL\QueryList;
 class crawlController extends baseController {
     private $rules = array();
     public function __construct(){
