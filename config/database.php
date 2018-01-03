@@ -116,5 +116,13 @@ return [
         ],
 
     ],
-
+    'mongo' => [
+        'default' => [
+            'host' => 'mongo',
+            'user' => 'admin',
+            'password' => 'admin',
+            'port' => '27017',
+            'database' => 'novel',
+        ],
+    ],
 ];

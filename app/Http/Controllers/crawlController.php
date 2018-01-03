@@ -6,6 +6,7 @@
  * Time: 18:20
  */
 use QL\QueryList;
+use App\model\novel;
 class crawlController extends baseController {
     private $rules = array();
     public function __construct(){
@@ -74,6 +75,66 @@ class crawlController extends baseController {
             'userName'=>array('.homepagelink','text'),
 //			'userInfo'=>array('.personal-info','text'),
             'imgUrl'=>array('.pic-frm-pic','src')
+        );
+        $this->rules['http://www.yousuu.com/book/%id%'] = array(
+            // 类型：历史军事
+            'type'=>array('.category','text',null,function($value){
+                return $value;
+            }),
+            // 小说名字：xxx
+            'name'=>array('.col-sm-7 span','text',null,function($value){
+                return $value;
+            }),
+            // 简介
+            'introduction'=>array('#bookinfo .panel-body','text',null,function($value){
+                return $value;
+            }),
+            // 封面图片地址
+            'imgurl'=>array('.visible-xs .bookavatar','src',null,function($value){
+                return $value;
+            }),
+            // 作者
+            'author' => array('.list-unstyled li:eq(0)','text',null,function($value){
+                return trim(str_replace("作者:","",$value));
+            }),
+            // 字数
+            'totalwords' => array('.list-unstyled li:eq(1)','text',null,function($value){
+                return (int)preg_replace('/\D/s', '', $value);
+            }),
+            // 总章节数
+            'totalchapter'=> array('.list-unstyled li:eq(2)','text',null,function($value){
+                return (int)preg_replace('/\D/s', '', $value);
+            }),
+            // 来自什么网站
+            'comfrom'=> array('.list-unstyled li:eq(3)','text',null,function($value){
+                return trim(str_replace("来自:","",$value));
+            }),
+            // 最后更新时间
+            'updatetime'=> array('.list-unstyled li:eq(4)','text',null,function($value){
+                $value = trim(str_replace("更新时间:","",$value));
+                return (int)date("YmdHis",strtotime(str_replace('/','-',$value)));
+            }),
+            // 最新章节
+            'latestchapter'=> array('.list-unstyled li:eq(5)','text',null,function($value){
+                return trim(str_replace("最新章节:","",$value));
+            }),
+            // 得分
+            'score'=> array('.ys-book-averrate span','text',null,function($value){
+                return (float)preg_replace('/[^0-9.]/s', '', $value);
+            }),
+            // 评价总数
+            'totleevaluate'=> array('.ys-book-averrate small','text',null,function($value){
+                return (int)preg_replace('/\D/s', '', $value);
+            }),
+            //各评价比例
+            'evaluateratio'=>array('.rate-bar-chart','text',null,function($value){
+                $keys= ["5star","4star","3star","2star","1star"];
+                $value = explode("%",$value);
+                array_pop($value);
+                return array_combine($keys,array_map(function($value){
+                    return (float)preg_replace('/[^0-9.]/s', '', $value);
+                },$value));
+            }),
         );
     }
     // 后台任务
@@ -466,4 +527,30 @@ class crawlController extends baseController {
             ezServerLog("sopanpan_file crawl count=".count($crawlData));
         }
     }
+
+    // novel
+    public function yousuu(){
+        set_time_limit(0);ignore_user_abort(true);
+        $params = $_GET;
+        $res = filter($params,['start','end']);
+        if($res['ret'] != 0)output_json($res);
+        $start =(int)$params['start'];
+        $end =(int)$params['end'];
+        $baseUrl = 'http://www.yousuu.com/book/%id%';
+        $rule = $this->rules[$baseUrl];
+        $novel = new novel();
+        $phpQuery = new QueryList();
+        for ($i = $start; $i <= $end; $i++) {
+            $url = str_replace('%id%', $i, $baseUrl);
+            $phpQuery->html = $url;
+            $data = $phpQuery->setQuery($rule)->data;
+            if(empty($data) || count($data) != 1 || count($data[0])==0)continue;
+            $insert = $data[0];
+            $insert['_id'] = $i;
+            $novel->insert($insert);
+        }
+    }
+
+
+
 }

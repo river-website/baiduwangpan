@@ -19,3 +19,4 @@ Route::get('/api/hotUser','hotUserController@getHot');
 Route::get('/api/hotSearch','hotSearchController@getHot');
 Route::get('/api/type','typeController@get');
 Route::get('/api/suffix/search','suffixController@search');
+Route::get('/api/crawl/yousuu','crawlController@yousuu');
